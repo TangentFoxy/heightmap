@@ -39,6 +39,9 @@ map = heightmap.create(150, 300, -1, 1)
 
 -- use the custom height function and normalize with a range of 10 to 20
 map = heightmap.create(200, 200, f, 10, 20)
+
+-- re-normalize a map in-place at any time (example range of 0 to 1)
+heightmap.normalize(map, 0, 1)
 ```
 
 How it Works
