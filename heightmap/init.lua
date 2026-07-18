@@ -24,6 +24,20 @@ local function max(t)
     return r
 end
 
+local function normalize(map, new_min, new_max)
+  local minimum = min(map)
+  local initialRange = max(map) - minimum
+  local finalRange = new_max - new_min
+  for i = 0, #map do
+    for j = 0, #map[0] do
+      map[i][j] = (map[i][j] - minimum) / initialRange * finalRange + new_min
+    end
+  end
+  map.min = min(map)
+  map.max = max(map)
+  return map -- superfluous
+end
+
 local function create(width, height, f_or_min, min_or_max, max_if_f)
   local map, rangeMin, rangeMax
     if type(f_or_min) == "function" then
@@ -36,22 +50,11 @@ local function create(width, height, f_or_min, min_or_max, max_if_f)
         rangeMax = min_or_max
     end
 
-    local minimum = min(map)
-    local initialRange = max(map) - minimum
-    local finalRange = rangeMax - rangeMin
-    for i=0,#map do
-        for j=0,#map[0] do
-            map[i][j] = (map[i][j] - minimum) / initialRange * finalRange + rangeMin
-        end
-    end
-
-    map.min = min(map)
-    map.max = max(map)
-
-    return map
+    return normalize(map, rangeMin, rangeMax)
 end
 
 return {
     create = create,
-    defaultf = heightmap.defaultf
+    defaultf = heightmap.defaultf,
+    normalize = normalize,
 }
